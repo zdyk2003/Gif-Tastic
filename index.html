@@ -32,7 +32,7 @@
 <!-- Where the movies are put -->
 				<div id = "movieButton"></div>
 				<br>
-				<!-- put the gifs here -->
+<!-- put the gifs here -->
 				<div id = "putGifsHere"></div>
 
 			</div>
@@ -40,28 +40,25 @@
 <!--text box to add new movie  -->
 			<div class="col-md-4">
 				<form id = "newMovie">
-				
 					<h3>Add a Movie</h3>
-
 					<input type = "text" id = "textBox">
 					<br>
 					<br>
-					<input type="submit" id="addMovie" value = "Add">
-
+					<input type="submit" id="addMovie" value = "ADD">
 				</form>
 			</div>
 
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 	<script type="text/javascript">
 	 
+$(document).ready(function(){
 //array for movies listed on window load 
-	var topics = ["despicable me", "finding nemo", "rapunzel", "secret life of pets", "hotel transylvania", "aladdin", "big hero 6", "goonies", "moana"];
-
+	var topics = ["DESPICABLE ME", "FINDING NEMO", "RAPUNZEL", "SECRET LIFE OF PETS", "HOTEL TRANSYLVANIA", "ALADDIN", "BIG HERO 6", "GOONIES", "MOANA"];
 //function to add the movie names to buttons
 	function makeButton() {
 
 // delete movie buttons so when screen reloads there are not repeat buttons
-		$("#movieButton").empty();
+	$("#movieButton").empty();
 
 // loop through array of movies
 		for (var i = 0; i < topics.length; i++) {
@@ -77,25 +74,25 @@
 			$("#movieButton").append(button);
 		}
 	} 
-//**clicking on previous buttons will not work after a new movie is added**
 // add movie button click function
-	// $("#addMovie").on("click", function(e) {
-	// 	//keep form from submitting itself
-	// 	event.preventDefault();
-	// 	//take the text from the input box
-	// 	var enterText = $("#textBox").val().trim();
-	// 	//add textbox movie to array
-	// 	topics.push(enterText);
-	// 	//run the button function
-	// 	makeButton();
+	$("#addMovie").on("click", function(e) {
+		//keep form from submitting itself
+		event.preventDefault();
+		//take the text from the input box
+		var enterText = $("#textBox").val().trim();
+		//add textbox movie to array
+		enterText = enterText.toUpperCase();
+		topics.push(enterText);
+		//run the button function
+		makeButton();
+		$("#textBox").val("");
+	});
 
-	// });
 // displays initial buttons
 		makeButton();
 
 //retrieve gifs on button click
-	$(".movie").on("click", function() {
-
+	$("#movieButton").on("click", ".movie", function() {
 		var movie = $(this).attr("data-name");
 		var queryURL = "https://api.giphy.com/v1/gifs/search?q=" +
         movie + "&api_key=dc6zaTOxFJmzC&limit=10&rating=g&rating=pg";
@@ -118,47 +115,37 @@
         			//make a p tag to display the movie rating
         			var p = $("<p>").text("Rating: " + rating);
         			//img tag for the gifs
-        			var gifImage = $("<img class= 'image'>");
-        			gifImage.attr("src", movieResult[i].images.fixed_height_still.url
-        			, movieResult[i].images.fixed_height.url);
+        			var gifImage = $("<img>");
+        			gifImage.addClass("image");
+        			gifImage.attr("src", movieResult[i].images.fixed_height_still.url);
+        			gifImage.attr("data-animate", movieResult[i].images.fixed_height.url);
+        			gifImage.attr("data-still", movieResult[i].images.fixed_height_still.url);
+        			gifImage.attr("data-state", "still");
         			//append the var p and gifImage to the gifDiv
-        			
         			gifDiv.append(gifImage);
         			gifDiv.append(p);
-
-        			$("#putGifsHere").prepend(gifDiv);
         			
+        			$("#putGifsHere").prepend(gifDiv);	
         		}
-
         	}
-
-//close .done(function(response))
-	    // });
+	    });
+	});
 
 // still and animate
-//**img will load still but will not animate
+			$("#putGifsHere").on("click", ".image", function() {
+				
+				var state = $(this).attr("data-state");
 
-			function animate() {
-
-					$(".image").on("click", function() {
-						
-						var state = $(this).attr("data-state");
-
-						if (state === "still") {
-							$(this).attr("src", $(this).attr("data-animate"))
-							$(this).attr("data-state", "animate")
-						}
-						else {
-							$(this).attr("src",$(this).attr("data-still"))
-							$(this).attr("data-state", "still")
-						}
-					});
-			}
-			animate();
-
+				if (state === "still") {
+					$(this).attr("src", $(this).attr("data-animate"))
+					$(this).attr("data-state", "animate")
+				}
+				else {
+					$(this).attr("src",$(this).attr("data-still"))
+					$(this).attr("data-state", "still")
+				}
 			});
-
-	});
+});
 
 	</script>
 		</div>
